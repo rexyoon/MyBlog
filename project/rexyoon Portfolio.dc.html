@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/three@0.128.0/build/three.min.js"></script>
+<style>
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{background:#06070c}
+  ::selection{background:#00f0ff;color:#06070c}
+  @keyframes gCyan{0%,6%,100%{opacity:0;transform:translate(0,0)}0.6%{opacity:.6;transform:translate(-3px,-1px)}1.6%{opacity:.4;transform:translate(3px,1px)}2.6%{opacity:.6;transform:translate(-2px,1px)}3.6%{opacity:.35;transform:translate(2px,0)}4.6%{opacity:0;transform:translate(0,0)}}
+  @keyframes gMag{0%,6%,100%{opacity:0;transform:translate(0,0)}0.6%{opacity:.6;transform:translate(3px,1px)}1.6%{opacity:.4;transform:translate(-3px,-1px)}2.6%{opacity:.6;transform:translate(2px,-1px)}3.6%{opacity:.35;transform:translate(-2px,0)}4.6%{opacity:0;transform:translate(0,0)}}
+  @keyframes blink{50%{opacity:.15}}
+  @keyframes hudflk{0%,100%{opacity:.62}50%{opacity:.36}}
+  @keyframes bob{0%{transform:translateY(0);opacity:0}20%{opacity:1}100%{transform:translateY(28px);opacity:0}}
+  @keyframes cardGlitch{0%{transform:translate(0,0)}25%{transform:translate(-1px,1px)}50%{transform:translate(1px,-1px)}75%{transform:translate(-1px,0)}100%{transform:translate(0,0)}}
+  @media (prefers-reduced-motion: reduce){*{animation-duration:.001s !important;animation-iteration-count:1 !important;transition-duration:.01s !important}}
+</style>
+</helmet>
+<div ref="{{ rootRef }}" style="--void:#06070c;--cy:#00f0ff;--mg:#ff2e97;--pu:#a855f7;--ink:#eafcff;--dim:#aeb9c9;background:#06070c;color:#eafcff;font-family:'IBM Plex Sans KR',system-ui,sans-serif;position:relative;overflow-x:hidden;-webkit-font-smoothing:antialiased;">
+
+  <!-- ================= LOADER ================= -->
+  <div data-loader style="position:fixed;inset:0;z-index:100;background:#06070c;display:flex;align-items:center;justify-content:center;opacity:1;transition:opacity .6s ease;">
+    <div style="width:min(560px,86vw);font-family:'JetBrains Mono',monospace;">
+      <div data-boot-lines style="font-size:clamp(11px,2.4vw,13px);line-height:1.95;color:rgba(0,240,255,.85);min-height:150px;"></div>
+      <div style="margin-top:16px;font-size:clamp(13px,3vw,15px);color:#eafcff;letter-spacing:.14em;">INITIALIZING<span style="animation:blink 1s step-end infinite;">…</span></div>
+      <div style="margin-top:12px;height:3px;background:rgba(0,240,255,.14);border-radius:2px;overflow:hidden;">
+        <div data-boot-bar style="height:100%;width:0%;background:linear-gradient(90deg,#00f0ff,#ff2e97);box-shadow:0 0 12px rgba(0,240,255,.7);transition:width .22s ease;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= HERO ================= -->
+  <section data-screen-label="Hero" style="position:relative;min-height:100svh;overflow:hidden;display:flex;align-items:center;border-bottom:1px solid rgba(0,240,255,.12);">
+    <div data-three style="position:absolute;inset:0;z-index:0;"></div>
+    <div data-fallback style="position:absolute;inset:0;z-index:0;opacity:0;transition:opacity .5s;background:radial-gradient(120% 80% at 50% 118%, rgba(255,46,151,.16), transparent 58%),radial-gradient(100% 60% at 50% 4%, rgba(0,240,255,.10), transparent 60%),repeating-linear-gradient(0deg, rgba(0,240,255,.07) 0 1px, transparent 1px 46px),repeating-linear-gradient(90deg, rgba(0,240,255,.05) 0 1px, transparent 1px 46px),#06070c;"></div>
+    <div style="position:absolute;inset:0;z-index:1;pointer-events:none;background:radial-gradient(120% 90% at 50% 116%, rgba(255,46,151,.14), transparent 55%),radial-gradient(80% 55% at 50% 0%, rgba(0,240,255,.07), transparent 60%);"></div>
+    <!-- scanlines -->
+    <div style="position:absolute;inset:0;z-index:6;pointer-events:none;mix-blend-mode:overlay;opacity:.5;background:repeating-linear-gradient(0deg, rgba(0,0,0,0) 0 2px, rgba(0,0,0,.55) 2px 3px);"></div>
+    <!-- vignette -->
+    <div style="position:absolute;inset:0;z-index:6;pointer-events:none;box-shadow:inset 0 0 180px 40px rgba(3,4,8,.82);"></div>
+
+    <!-- HUD corners -->
+    <div data-hud style="position:absolute;top:clamp(16px,3vw,30px);left:clamp(16px,3vw,30px);z-index:8;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:rgba(0,240,255,.72);animation:hudflk 6s ease-in-out infinite;">
+      <div style="width:24px;height:24px;border-left:1px solid rgba(0,240,255,.45);border-top:1px solid rgba(0,240,255,.45);margin-bottom:9px;"></div>
+      SYS://rexyoon
+    </div>
+    <div data-hud style="position:absolute;top:clamp(16px,3vw,30px);right:clamp(16px,3vw,30px);z-index:8;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:rgba(0,240,255,.72);text-align:right;animation:hudflk 6s ease-in-out infinite .5s;">
+      <div style="width:24px;height:24px;border-right:1px solid rgba(0,240,255,.45);border-top:1px solid rgba(0,240,255,.45);margin:0 0 9px auto;"></div>
+      STATUS: ONLINE <span style="color:#00f0ff;animation:blink 1.4s step-end infinite;">●</span>
+    </div>
+    <div data-hud style="position:absolute;bottom:clamp(16px,3vw,30px);left:clamp(16px,3vw,30px);z-index:8;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.12em;color:rgba(0,240,255,.55);line-height:1.7;">
+      RENDER: WEBGL<br>GRID: SYNTH—07<br>CORE: STABLE
+      <div style="width:24px;height:24px;border-left:1px solid rgba(0,240,255,.4);border-bottom:1px solid rgba(0,240,255,.4);margin-top:9px;"></div>
+    </div>
+    <div data-hud style="position:absolute;bottom:clamp(16px,3vw,30px);right:clamp(16px,3vw,30px);z-index:8;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.12em;color:rgba(0,240,255,.55);line-height:1.7;text-align:right;">
+      LAT 37.55 · LON 126.99<br>SESSION #A1—REX<br>ENC: AES—256
+      <div style="width:24px;height:24px;border-right:1px solid rgba(0,240,255,.4);border-bottom:1px solid rgba(0,240,255,.4);margin:9px 0 0 auto;"></div>
+    </div>
+
+    <!-- content -->
+    <div data-hero-content style="position:relative;z-index:5;width:100%;max-width:1200px;margin:0 auto;padding:0 clamp(22px,5vw,64px);opacity:0;transform:translateY(14px);transition:opacity .7s ease, transform .7s cubic-bezier(.2,.85,.25,1);">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:clamp(11px,1.4vw,13px);letter-spacing:.34em;color:#00f0ff;margin-bottom:clamp(16px,2.5vw,26px);text-shadow:0 0 18px rgba(0,240,255,.5);">SYS://rexyoon — FULL-STACK</div>
+      <h1 style="margin:0;font-family:'IBM Plex Sans KR',sans-serif;font-weight:700;font-size:clamp(3rem,11vw,8rem);line-height:.94;letter-spacing:-.02em;white-space:nowrap;">
+        <span style="position:relative;display:inline-block;white-space:nowrap;">
+          <span style="position:relative;z-index:2;color:#eafcff;text-shadow:0 0 34px rgba(0,240,255,.25);">정재윤</span>
+          <span data-ghost aria-hidden="true" style="position:absolute;inset:0;z-index:1;color:#00f0ff;mix-blend-mode:screen;opacity:0;animation:gCyan 5.5s linear infinite;">정재윤</span>
+          <span data-ghost aria-hidden="true" style="position:absolute;inset:0;z-index:1;color:#ff2e97;mix-blend-mode:screen;opacity:0;animation:gMag 5.5s linear infinite;">정재윤</span>
+        </span>
+      </h1>
+      <div style="font-family:'JetBrains Mono',monospace;font-weight:500;font-size:clamp(1.1rem,3.2vw,2rem);color:#00f0ff;letter-spacing:.02em;margin-top:clamp(8px,1.5vw,14px);text-shadow:0 0 22px rgba(0,240,255,.4);">/ rexyoon<span style="animation:blink 1.05s step-end infinite;">_</span></div>
+      <p style="font-family:'IBM Plex Sans KR',sans-serif;font-weight:400;font-size:clamp(1.05rem,2.2vw,1.5rem);line-height:1.6;color:#d7e2ee;margin:clamp(22px,3.5vw,34px) 0 0;max-width:30ch;">화면부터 서버까지 단련한 <span style="color:#fff;font-weight:600;">풀스택 개발자</span></p>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:clamp(10px,1.3vw,12px);letter-spacing:.24em;color:rgba(174,185,201,.75);margin-top:clamp(16px,2.4vw,24px);">BACKEND · FULL-STACK · LIVE SERVICE & SI</div>
+    </div>
+
+    <!-- scroll cue -->
+    <div data-hud style="position:absolute;left:50%;bottom:clamp(18px,3vw,30px);transform:translateX(-50%);z-index:8;display:flex;flex-direction:column;align-items:center;gap:9px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.34em;color:rgba(0,240,255,.7);">
+      SCROLL
+      <div style="position:relative;width:1px;height:34px;background:linear-gradient(rgba(0,240,255,.5), transparent);">
+        <div style="position:absolute;top:0;left:-1.5px;width:4px;height:8px;border-radius:2px;background:#00f0ff;box-shadow:0 0 8px #00f0ff;animation:bob 1.8s ease-in-out infinite;"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= ABOUT ================= -->
+  <section data-screen-label="About" style="position:relative;background:#06070c;padding:clamp(72px,10vw,150px) clamp(22px,5vw,64px);border-bottom:1px solid rgba(0,240,255,.09);">
+    <div style="max-width:1120px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:clamp(40px,6vw,80px);align-items:start;">
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.28em;color:#00f0ff;margin-bottom:20px;">// ABOUT — 001</div>
+        <h2 style="margin:0 0 22px;font-family:'IBM Plex Sans KR',sans-serif;font-weight:700;font-size:clamp(1.9rem,4.4vw,3rem);line-height:1.18;letter-spacing:-.01em;color:#eafcff;">화면부터 서버까지,<br>서비스를 끝까지 만든다.</h2>
+        <p style="font-family:'IBM Plex Sans KR',sans-serif;font-weight:400;font-size:clamp(1rem,1.5vw,1.12rem);line-height:1.78;color:#aeb9c9;max-width:44ch;margin:0 0 16px;">백엔드·웹·모바일·배포까지 제품 전체를 혼자 설계·구현해 온 풀스택 개발자입니다. 인증·결제·데이터처럼 무겁고 까다로운 부분을 끝까지 파고들어, 실제로 안정적으로 동작하게 만드는 걸 좋아합니다.</p>
+        <p style="font-family:'IBM Plex Sans KR',sans-serif;font-weight:400;font-size:clamp(1rem,1.5vw,1.12rem);line-height:1.78;color:#aeb9c9;max-width:44ch;margin:0;">대기업 SI 현장에서 관리자 시스템을 개발·유지보수하며, 앱 버그를 넘어 인프라 계층 트러블슈팅까지 직접 다뤄 왔습니다.</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;margin-top:clamp(28px,4vw,40px);background:rgba(0,240,255,.14);border:1px solid rgba(0,240,255,.14);border-radius:6px;overflow:hidden;">
+          <div style="background:#06070c;padding:clamp(16px,2vw,20px);"><div style="font-family:'JetBrains Mono',monospace;font-weight:800;font-size:clamp(1.7rem,3vw,2.3rem);color:#00f0ff;line-height:1;text-shadow:0 0 18px rgba(0,240,255,.35);">06</div><div style="font-family:'IBM Plex Sans KR',sans-serif;font-size:12.5px;color:#aeb9c9;margin-top:9px;">기획~배포 프로젝트</div></div>
+          <div style="background:#06070c;padding:clamp(16px,2vw,20px);"><div style="font-family:'JetBrains Mono',monospace;font-weight:800;font-size:clamp(1.7rem,3vw,2.3rem);color:#00f0ff;line-height:1;text-shadow:0 0 18px rgba(0,240,255,.35);">03</div><div style="font-family:'IBM Plex Sans KR',sans-serif;font-size:12.5px;color:#aeb9c9;margin-top:9px;">1인 풀스택</div></div>
+          <div style="background:#06070c;padding:clamp(16px,2vw,20px);"><div style="font-family:'JetBrains Mono',monospace;font-weight:800;font-size:clamp(1.7rem,3vw,2.3rem);color:#00f0ff;line-height:1;text-shadow:0 0 18px rgba(0,240,255,.35);">01</div><div style="font-family:'IBM Plex Sans KR',sans-serif;font-size:12.5px;color:#aeb9c9;margin-top:9px;">공모전 수상</div></div>
+          <div style="background:#06070c;padding:clamp(16px,2vw,20px);"><div style="font-family:'JetBrains Mono',monospace;font-weight:800;font-size:clamp(1.7rem,3vw,2.3rem);color:#ff2e97;line-height:1;text-shadow:0 0 18px rgba(255,46,151,.3);">SI</div><div style="font-family:'IBM Plex Sans KR',sans-serif;font-size:12.5px;color:#aeb9c9;margin-top:9px;">대기업 SI 실무</div></div>
+        </div>
+      </div>
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.22em;color:rgba(0,240,255,.85);margin-bottom:24px;">STAT MATRIX <span style="color:rgba(174,185,201,.6);">// TRAINING LOAD</span></div>
+
+        <div data-statgraph style="margin-top:2px;">
+          <svg viewBox="0 40 452 256" style="width:100%;height:auto;max-width:520px;display:block;overflow:visible;">
+            <line x1="20" y1="58" x2="432" y2="58" stroke="rgba(0,240,255,.10)" stroke-dasharray="3 5"/>
+            <line x1="20" y1="108" x2="432" y2="108" stroke="rgba(0,240,255,.10)" stroke-dasharray="3 5"/>
+            <line x1="20" y1="158" x2="432" y2="158" stroke="rgba(0,240,255,.10)" stroke-dasharray="3 5"/>
+            <line x1="20" y1="208" x2="432" y2="208" stroke="rgba(0,240,255,.10)" stroke-dasharray="3 5"/>
+            <line x1="20" y1="58" x2="20" y2="258" stroke="rgba(0,240,255,.18)"/>
+            <line x1="20" y1="258" x2="432" y2="258" stroke="rgba(0,240,255,.35)"/>
+            <text x="15" y="61" text-anchor="end" style="font:400 8px 'JetBrains Mono',monospace;fill:rgba(174,185,201,.5);">100</text>
+            <text x="15" y="111" text-anchor="end" style="font:400 8px 'JetBrains Mono',monospace;fill:rgba(174,185,201,.5);">75</text>
+            <text x="15" y="161" text-anchor="end" style="font:400 8px 'JetBrains Mono',monospace;fill:rgba(174,185,201,.5);">50</text>
+            <text x="15" y="211" text-anchor="end" style="font:400 8px 'JetBrains Mono',monospace;fill:rgba(174,185,201,.5);">25</text>
+            <g data-bar style="transform-box:fill-box;transform-origin:50% 100%;transition:transform .85s cubic-bezier(.16,.84,.44,1);filter:drop-shadow(0 0 5px rgba(0,240,255,.45));">
+              <polygon points="30,258 88,258 88,74 30,74" fill="rgba(0,240,255,.10)" stroke="#00f0ff" stroke-width="1.4"/>
+              <polygon points="88,258 106,248 106,64 88,74" fill="rgba(0,240,255,.22)" stroke="rgba(0,240,255,.55)" stroke-width="1.1"/>
+              <polygon points="30,74 88,74 106,64 48,64" fill="rgba(0,240,255,.5)" stroke="#7ef9ff" stroke-width="1.1"/>
+            </g>
+            <g data-bar style="transform-box:fill-box;transform-origin:50% 100%;transition:transform .85s cubic-bezier(.16,.84,.44,1);filter:drop-shadow(0 0 5px rgba(0,240,255,.45));">
+              <polygon points="136,258 194,258 194,98 136,98" fill="rgba(0,240,255,.10)" stroke="#00f0ff" stroke-width="1.4"/>
+              <polygon points="194,258 212,248 212,88 194,98" fill="rgba(0,240,255,.22)" stroke="rgba(0,240,255,.55)" stroke-width="1.1"/>
+              <polygon points="136,98 194,98 212,88 154,88" fill="rgba(0,240,255,.5)" stroke="#7ef9ff" stroke-width="1.1"/>
+            </g>
+            <g data-bar style="transform-box:fill-box;transform-origin:50% 100%;transition:transform .85s cubic-bezier(.16,.84,.44,1);filter:drop-shadow(0 0 5px rgba(0,240,255,.45));">
+              <polygon points="242,258 300,258 300,110 242,110" fill="rgba(0,240,255,.10)" stroke="#00f0ff" stroke-width="1.4"/>
+              <polygon points="300,258 318,248 318,100 300,110" fill="rgba(0,240,255,.22)" stroke="rgba(0,240,255,.55)" stroke-width="1.1"/>
+              <polygon points="242,110 300,110 318,100 260,100" fill="rgba(0,240,255,.5)" stroke="#7ef9ff" stroke-width="1.1"/>
+            </g>
+            <g data-bar style="transform-box:fill-box;transform-origin:50% 100%;transition:transform .85s cubic-bezier(.16,.84,.44,1);filter:drop-shadow(0 0 6px rgba(255,46,151,.5));">
+              <polygon points="348,258 406,258 406,134 348,134" fill="rgba(255,46,151,.10)" stroke="#ff2e97" stroke-width="1.4"/>
+              <polygon points="406,258 424,248 424,124 406,134" fill="rgba(255,46,151,.22)" stroke="rgba(255,46,151,.55)" stroke-width="1.1"/>
+              <polygon points="348,134 406,134 424,124 366,124" fill="rgba(255,46,151,.5)" stroke="#ff9ecb" stroke-width="1.1"/>
+            </g>
+            <text x="68" y="56" text-anchor="middle" style="font:700 15px 'JetBrains Mono',monospace;fill:#eafcff;">92</text>
+            <text x="174" y="80" text-anchor="middle" style="font:700 15px 'JetBrains Mono',monospace;fill:#eafcff;">80</text>
+            <text x="280" y="92" text-anchor="middle" style="font:700 15px 'JetBrains Mono',monospace;fill:#eafcff;">74</text>
+            <text x="386" y="116" text-anchor="middle" style="font:700 15px 'JetBrains Mono',monospace;fill:#ff9ecb;">62</text>
+            <text x="59" y="278" text-anchor="middle" style="font:500 10px 'JetBrains Mono',monospace;fill:rgba(0,240,255,.75);letter-spacing:1px;">BACKEND</text>
+            <text x="165" y="278" text-anchor="middle" style="font:500 10px 'JetBrains Mono',monospace;fill:rgba(0,240,255,.75);letter-spacing:1px;">FRONTEND</text>
+            <text x="271" y="278" text-anchor="middle" style="font:500 10px 'JetBrains Mono',monospace;fill:rgba(0,240,255,.75);letter-spacing:1px;">DATABASE</text>
+            <text x="377" y="278" text-anchor="middle" style="font:500 10px 'JetBrains Mono',monospace;fill:rgba(255,46,151,.8);letter-spacing:1px;">DEVOPS</text>
+          </svg>
+        </div>
+
+        <div style="margin-top:clamp(30px,4vw,42px);">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.22em;color:rgba(0,240,255,.85);margin-bottom:16px;">STACK <span style="color:rgba(174,185,201,.6);">// DETAIL</span></div>
+          <div style="display:flex;flex-direction:column;gap:13px;">
+            <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:baseline;"><span style="flex:0 0 82px;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;color:rgba(174,185,201,.6);">LANG</span><span style="display:flex;flex-wrap:wrap;gap:7px;"><span style="font-family:'JetBrains Mono',monospace;font-size:11px;padding:4px 9px;border:1px solid rgba(120,150,180,.22);border-radius:3px;color:#cdd8e6;">Java 17</span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;padding:4px 9px;border:1px solid rgba(120,150,180,.22);border-radius:3px;color:#cdd8e6;">TypeScript</span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;padding:4px 9px;border:1px solid rgba(120,150,180,.22);border-radius:3px;color:#cdd8e6;">JavaScript</span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;padding:4px 9px;border:1px solid rgba(120,150,180,.22);border-radius:3px;color:#cdd8e6;">Python</span></span></div>
+            <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:baseline;"><span style="flex:0 0 82px;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;color:rgba(174,185,201,.6);">BACKEND</span><span style="display:flex;flex-wrap:wrap;gap:7px;"><span style="font-family:'JetBrains Mono',monospace;font-size:11px;padding:4px 9px;border:1px solid rgba(0,240,255,.22);border-radius:3px;color:#bfeefc;">Spring Boot</span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;padding:4px 9px;border:1px solid rgba(0,240,255,.22);border-radius:3px;color:#bfeefc;">Spring MVC</span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;padding:4px 9px;border:1px solid rgba(0,240,255,.22);border-radius:3px;color:#bfeefc;">Spring Security</span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;padding:4px 9px;border:1px solid rgba(0,240,255,.22);border-radius:3px;color:#bfeefc;">JPA</span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;padding:4px 9px;border:1px solid rgba(0,240,255,.22);border-radius:3px;color:#bfeefc;">MyBatis</span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;padding:4px 9px;border:1px solid rgba(0,240,255,.22);border-radius:3px;color:#bfeefc;">FastAPI</span></span></div>
+            <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:baseline;"><span style="flex:0 0 82px;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;color:rgba(174,185,201,.6);">FRONTEND</span><span style="display:flex;flex-wrap:wrap;gap:7px;"><span style="font-family:'JetBrains Mono',monospace;font-size:11px;padding:4px 9px;border:1px solid rgba(120,150,180,.22);border-radius:3px;color:#cdd8e6;">React</span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;padding:4px 9px;border:1px solid rgba(120,150,180,.22);border-radius:3px;color:#cdd8e6;">Next.js</span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;padding:4px 9px;border:1px solid rgba(120,150,180,.22);border-radius:3px;color:#cdd8e6;">Tailwind CSS</span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;padding:4px 9px;border:1px solid rgba(120,150,180,.22);border-radius:3px;color:#cdd8e6;">Zustand</span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;padding:4px 9px;border:1px solid rgba(120,150,180,.22);border-radius:3px;color:#cdd8e6;">JSP / jQuery</span></span></div>
+            <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:baseline;"><span style="flex:0 0 82px;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;color:rgba(174,185,201,.6);">DATABASE</span><span style="display:flex;flex-wrap:wrap;gap:7px;"><span style="font-family:'JetBrains Mono',monospace;font-size:11px;padding:4px 9px;border:1px solid rgba(120,150,180,.22);border-radius:3px;color:#cdd8e6;">MySQL</span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;padding:4px 9px;border:1px solid rgba(120,150,180,.22);border-radius:3px;color:#cdd8e6;">Oracle</span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;padding:4px 9px;border:1px solid rgba(120,150,180,.22);border-radius:3px;color:#cdd8e6;">MariaDB</span></span></div>
+            <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:baseline;"><span style="flex:0 0 82px;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;color:rgba(174,185,201,.6);">DEVOPS</span><span style="display:flex;flex-wrap:wrap;gap:7px;"><span style="font-family:'JetBrains Mono',monospace;font-size:11px;padding:4px 9px;border:1px solid rgba(120,150,180,.22);border-radius:3px;color:#cdd8e6;">AWS · EC2 / S3 / Route53</span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;padding:4px 9px;border:1px solid rgba(120,150,180,.22);border-radius:3px;color:#cdd8e6;">Docker</span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;padding:4px 9px;border:1px solid rgba(120,150,180,.22);border-radius:3px;color:#cdd8e6;">GitHub Actions</span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;padding:4px 9px;border:1px solid rgba(120,150,180,.22);border-radius:3px;color:#cdd8e6;">Git</span></span></div>
+            <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:baseline;"><span style="flex:0 0 82px;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;color:rgba(174,185,201,.6);">API</span><span style="display:flex;flex-wrap:wrap;gap:7px;"><span style="font-family:'JetBrains Mono',monospace;font-size:11px;padding:4px 9px;border:1px solid rgba(255,46,151,.22);border-radius:3px;color:#ffc4e1;">TossPayments</span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;padding:4px 9px;border:1px solid rgba(255,46,151,.22);border-radius:3px;color:#ffc4e1;">PortOne</span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;padding:4px 9px;border:1px solid rgba(255,46,151,.22);border-radius:3px;color:#ffc4e1;">Kakao Maps</span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;padding:4px 9px;border:1px solid rgba(255,46,151,.22);border-radius:3px;color:#ffc4e1;">JWT</span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;padding:4px 9px;border:1px solid rgba(255,46,151,.22);border-radius:3px;color:#ffc4e1;">OpenAI</span></span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= PROJECTS ================= -->
+  <section data-screen-label="Projects" style="position:relative;background:#06070c;padding:clamp(72px,10vw,150px) clamp(22px,5vw,64px);border-bottom:1px solid rgba(0,240,255,.09);">
+    <div style="max-width:1120px;margin:0 auto;">
+      <div data-reveal style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.28em;color:#00f0ff;margin-bottom:16px;opacity:0;transform:translateY(30px);transition:opacity .7s cubic-bezier(.16,.84,.44,1), transform .7s cubic-bezier(.16,.84,.44,1);">// 002</div>
+      <h2 data-reveal style="margin:0 0 14px;font-family:'JetBrains Mono',monospace;font-weight:800;font-size:clamp(1.9rem,5.2vw,3.4rem);letter-spacing:-.01em;color:#eafcff;opacity:0;transform:translateY(34px);transition:opacity .7s cubic-bezier(.16,.84,.44,1), transform .7s cubic-bezier(.16,.84,.44,1);">PROJECTS <span style="color:#ff2e97;">// TRAINING LOG</span></h2>
+      <p data-reveal style="font-family:'IBM Plex Sans KR',sans-serif;font-size:clamp(1rem,1.5vw,1.1rem);line-height:1.7;color:#aeb9c9;max-width:56ch;margin:0 0 clamp(36px,5vw,52px);opacity:0;transform:translateY(30px);transition:opacity .7s cubic-bezier(.16,.84,.44,1), transform .7s cubic-bezier(.16,.84,.44,1);">혼자 설계·구현한 실서비스와 진행 중인 프로젝트입니다. KoALa는 실제 동작하는 서비스, Hancare·무양은 개발 중 UI 설계(목업)입니다.</p>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:clamp(18px,2.4vw,26px);">
+
+        <article data-reveal style="grid-column:1 / -1;position:relative;padding:clamp(24px,3.2vw,36px);background:linear-gradient(180deg, rgba(12,17,27,.62), rgba(6,7,12,.55));border:1px solid rgba(0,240,255,.28);border-radius:6px;opacity:0;transform:translateY(46px) scale(.985);filter:blur(6px);transition:border-color .25s, box-shadow .25s, opacity .75s cubic-bezier(.16,.84,.44,1), transform .75s cubic-bezier(.16,.84,.44,1), filter .75s cubic-bezier(.16,.84,.44,1);" style-hover="border-color:rgba(0,240,255,.7);box-shadow:0 0 0 1px rgba(0,240,255,.3), 0 0 40px rgba(0,240,255,.14), inset 0 0 40px rgba(0,240,255,.05);animation:cardGlitch .35s steps(2,end) 1;">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px;">
+            <div style="display:flex;align-items:center;gap:12px;"><span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:rgba(120,150,180,.6);">01</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.16em;padding:5px 9px;border-radius:3px;border:1px solid rgba(0,240,255,.4);color:#7ef9ff;background:rgba(0,240,255,.08);">★ FEATURED</span></div>
+            <span style="display:inline-flex;align-items:center;gap:7px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.16em;padding:5px 9px;border-radius:3px;border:1px solid rgba(0,240,255,.5);color:#00f0ff;background:rgba(0,240,255,.1);"><span style="width:6px;height:6px;border-radius:50%;background:#00f0ff;box-shadow:0 0 8px #00f0ff;animation:blink 1.6s step-end infinite;"></span>LIVE · 실서비스</span>
+          </div>
+          <h3 style="margin:0;font-family:'JetBrains Mono',monospace;font-weight:800;font-size:clamp(1.5rem,2.8vw,2rem);color:#eafcff;letter-spacing:-.01em;">KoALa <span style="font-family:'IBM Plex Sans KR',sans-serif;font-weight:500;font-size:.62em;color:rgba(174,185,201,.75);">아트소품 판매 포털</span></h3>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11.5px;letter-spacing:.03em;color:rgba(0,240,255,.6);margin:8px 0 16px;">Full-stack (1인) · 웹 + 모바일 · 2026.03 – 07</div>
+          <p style="font-family:'IBM Plex Sans KR',sans-serif;font-size:1rem;line-height:1.72;color:#c2ccda;margin:0 0 22px;max-width:64ch;">한 명이 백엔드·웹·모바일을 모두 설계·구현해 실제로 동작하는 아트소품 이커머스 포털. 토스페이먼츠 결제부터 주문 완료까지 실제 구매 흐름을 구현했습니다.</p>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:clamp(16px,2vw,24px);margin-bottom:22px;">
+            <div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.2em;color:rgba(0,240,255,.7);margin-bottom:12px;">FEATURES</div>
+              <div style="display:flex;flex-direction:column;gap:10px;">
+                <div style="display:flex;gap:9px;font-family:'IBM Plex Sans KR',sans-serif;font-size:.92rem;line-height:1.55;color:#b7c2d1;"><span style="color:#00f0ff;flex:none;">▸</span>회원·상품·장바구니·주문·결제·위시리스트 REST API 설계</div>
+                <div style="display:flex;gap:9px;font-family:'IBM Plex Sans KR',sans-serif;font-size:.92rem;line-height:1.55;color:#b7c2d1;"><span style="color:#00f0ff;flex:none;">▸</span>토스페이먼츠 결제 연동 — 결제 성공 후 주문 저장·완료 처리</div>
+                <div style="display:flex;gap:9px;font-family:'IBM Plex Sans KR',sans-serif;font-size:.92rem;line-height:1.55;color:#b7c2d1;"><span style="color:#00f0ff;flex:none;">▸</span>마이페이지·주문내역 등 로그인 기능을 웹·모바일 양쪽 제공</div>
+              </div>
+            </div>
+            <div style="border:1px solid rgba(0,240,255,.18);border-radius:5px;background:rgba(0,240,255,.03);padding:16px 18px;">
+              <div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;color:rgba(0,240,255,.75);margin-bottom:13px;">TROUBLESHOOTING — 웹·모바일 토큰 갱신</div>
+              <div style="display:flex;flex-direction:column;gap:9px;">
+                <div style="font-family:'IBM Plex Sans KR',sans-serif;font-size:.86rem;line-height:1.5;color:#aeb9c9;"><span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.1em;padding:2px 6px;border-radius:2px;border:1px solid rgba(255,46,151,.4);color:#ff9ecb;margin-right:8px;">문제</span>같은 API를 공유하는데 일정 시간 뒤 한쪽 세션이 끉김</div>
+                <div style="font-family:'IBM Plex Sans KR',sans-serif;font-size:.86rem;line-height:1.5;color:#aeb9c9;"><span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.1em;padding:2px 6px;border-radius:2px;border:1px solid rgba(174,185,201,.35);color:#aeb9c9;margin-right:8px;">원인</span>토큰 저장 위치·갱신 시점 차이로 재발급 흐름이 클라이언트마다 어긋남</div>
+                <div style="font-family:'IBM Plex Sans KR',sans-serif;font-size:.86rem;line-height:1.5;color:#aeb9c9;"><span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.1em;padding:2px 6px;border-radius:2px;border:1px solid rgba(0,240,255,.4);color:#7ef9ff;margin-right:8px;">해결</span>클라이언트별 저장 방식을 정리하고 만료 감지→리프레시 재발급을 공통화</div>
+                <div style="font-family:'IBM Plex Sans KR',sans-serif;font-size:.86rem;line-height:1.5;color:#d7e2ee;"><span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.1em;padding:2px 6px;border-radius:2px;border:1px solid rgba(0,240,255,.6);color:#06070c;background:#00f0ff;margin-right:8px;">결과</span>웹·모바일 모두에서 세션이 끉기지 않고 일관 유지</div>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;padding-top:18px;border-top:1px solid rgba(0,240,255,.1);">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.03em;color:rgba(0,240,255,.7);">Java · Spring Boot · JWT · TypeScript (Web·Mobile) · TossPayments</div>
+            <div style="display:flex;gap:16px;flex-wrap:wrap;">
+              <a href="https://koala-art.co.kr/" target="_blank" rel="noopener" style="font-family:'JetBrains Mono',monospace;font-size:11.5px;letter-spacing:.08em;color:#00f0ff;text-decoration:none;border-bottom:1px solid rgba(0,240,255,.3);padding-bottom:2px;" style-hover="border-bottom-color:#00f0ff;text-shadow:0 0 12px rgba(0,240,255,.6);">SITE ↗</a>
+              <a href="https://github.com/heron-Arso" target="_blank" rel="noopener" style="font-family:'JetBrains Mono',monospace;font-size:11.5px;letter-spacing:.08em;color:#aeb9c9;text-decoration:none;border-bottom:1px solid rgba(174,185,201,.25);padding-bottom:2px;" style-hover="color:#00f0ff;border-bottom-color:#00f0ff;">REPO ↗</a>
+            </div>
+          </div>
+        </article>
+
+        <article data-reveal style="position:relative;padding:clamp(22px,3vw,30px);background:linear-gradient(180deg, rgba(12,17,27,.6), rgba(6,7,12,.55));border:1px solid rgba(120,150,180,.16);border-radius:5px;opacity:0;transform:translateY(46px) scale(.985);filter:blur(6px);transition:border-color .25s, box-shadow .25s, opacity .75s cubic-bezier(.16,.84,.44,1), transform .75s cubic-bezier(.16,.84,.44,1), filter .75s cubic-bezier(.16,.84,.44,1);" style-hover="border-color:rgba(255,46,151,.6);box-shadow:0 0 0 1px rgba(255,46,151,.28), 0 0 34px rgba(255,46,151,.12), inset 0 0 30px rgba(255,46,151,.05);animation:cardGlitch .35s steps(2,end) 1;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:rgba(120,150,180,.6);">02</span>
+            <span style="display:inline-flex;align-items:center;gap:7px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;padding:5px 9px;border-radius:3px;border:1px solid rgba(255,46,151,.5);color:#ff8fc6;background:rgba(255,46,151,.1);"><span style="width:6px;height:6px;border-radius:50%;background:#ff2e97;box-shadow:0 0 8px #ff2e97;"></span>DEV · UI</span>
+          </div>
+          <h3 style="margin:0;font-family:'JetBrains Mono',monospace;font-weight:800;font-size:clamp(1.35rem,2.4vw,1.7rem);color:#eafcff;letter-spacing:-.01em;">Hancare <span style="font-family:'IBM Plex Sans KR',sans-serif;font-weight:500;font-size:.62em;color:rgba(174,185,201,.75);">한의원 예약·검색</span></h3>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.03em;color:rgba(0,240,255,.6);margin:7px 0 14px;">Full-stack (1인) · 모바일 · 2026.06 – 08</div>
+          <p style="font-family:'IBM Plex Sans KR',sans-serif;font-size:.95rem;line-height:1.65;color:#b7c2d1;margin:0 0 16px;">증상 기반으로 주변 한의원을 찾아 예약·관리하는 모바일 서비스. 검진결과·처방전은 암호화 보관하도록 설계했습니다.</p>
+          <div style="border:1px solid rgba(255,46,151,.2);border-radius:5px;background:rgba(255,46,151,.03);padding:14px 16px;margin:0 0 18px;">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;color:rgba(255,142,198,.9);margin-bottom:9px;">★ 핵심 설계 — 접근성 (노인 / 일반)</div>
+            <p style="font-family:'IBM Plex Sans KR',sans-serif;font-size:.85rem;line-height:1.55;color:#b7c2d1;margin:0 0 11px;">같은 정보 구조를 유지하면서 밀도·크기만 다르게 — “누가 쓰는지”를 고려한 제품적 접근.</p>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;"><span style="font-family:'JetBrains Mono',monospace;font-size:10px;padding:4px 8px;border:1px solid rgba(120,150,180,.25);border-radius:3px;color:#cdd8e6;">노인 모드 · 큰 글씨·터치</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;padding:4px 8px;border:1px solid rgba(120,150,180,.25);border-radius:3px;color:#cdd8e6;">일반 모드 · 높은 밀도</span></div>
+          </div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.04em;color:rgba(0,240,255,.7);margin-bottom:18px;">Java · Spring Boot · TypeScript</div>
+          <div style="display:flex;gap:16px;flex-wrap:wrap;">
+            <a href="https://github.com/hancare-orgnazation" target="_blank" rel="noopener" style="font-family:'JetBrains Mono',monospace;font-size:11.5px;letter-spacing:.08em;color:#aeb9c9;text-decoration:none;border-bottom:1px solid rgba(174,185,201,.25);padding-bottom:2px;" style-hover="color:#00f0ff;border-bottom-color:#00f0ff;">REPO ↗</a>
+          </div>
+        </article>
+
+        <article data-reveal style="position:relative;padding:clamp(22px,3vw,30px);background:linear-gradient(180deg, rgba(12,17,27,.6), rgba(6,7,12,.55));border:1px solid rgba(120,150,180,.16);border-radius:5px;opacity:0;transform:translateY(46px) scale(.985);filter:blur(6px);transition:border-color .25s, box-shadow .25s, opacity .75s cubic-bezier(.16,.84,.44,1), transform .75s cubic-bezier(.16,.84,.44,1), filter .75s cubic-bezier(.16,.84,.44,1);" style-hover="border-color:rgba(255,46,151,.6);box-shadow:0 0 0 1px rgba(255,46,151,.28), 0 0 34px rgba(255,46,151,.12), inset 0 0 30px rgba(255,46,151,.05);animation:cardGlitch .35s steps(2,end) 1;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:rgba(120,150,180,.6);">03</span>
+            <span style="display:inline-flex;align-items:center;gap:7px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;padding:5px 9px;border-radius:3px;border:1px solid rgba(255,46,151,.5);color:#ff8fc6;background:rgba(255,46,151,.1);"><span style="width:6px;height:6px;border-radius:50%;background:#ff2e97;box-shadow:0 0 8px #ff2e97;"></span>DEV · UI</span>
+          </div>
+          <h3 style="margin:0;font-family:'JetBrains Mono',monospace;font-weight:800;font-size:clamp(1.35rem,2.4vw,1.7rem);color:#eafcff;letter-spacing:-.01em;">MuYang <span style="font-family:'IBM Plex Sans KR',sans-serif;font-weight:500;font-size:.6em;color:rgba(174,185,201,.7);">무양 · 반려동물 이커머스</span></h3>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.03em;color:rgba(0,240,255,.6);margin:7px 0 14px;">Full-stack (1인) · 모바일 · 2026.05 – 09</div>
+          <p style="font-family:'IBM Plex Sans KR',sans-serif;font-size:.95rem;line-height:1.65;color:#b7c2d1;margin:0 0 18px;">반려동물과 보호자를 위한 모바일 이커머스. 상품 상세·장바구니·마이페이지 등 핵심 화면을 네이비·크림 톤으로 일관되게 설계했습니다.</p>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.04em;color:rgba(0,240,255,.7);margin-bottom:18px;">Java · Spring Boot · TypeScript</div>
+          <div style="display:flex;gap:16px;flex-wrap:wrap;">
+            <a href="https://github.com/muyangshop" target="_blank" rel="noopener" style="font-family:'JetBrains Mono',monospace;font-size:11.5px;letter-spacing:.08em;color:#aeb9c9;text-decoration:none;border-bottom:1px solid rgba(174,185,201,.25);padding-bottom:2px;" style-hover="color:#00f0ff;border-bottom-color:#00f0ff;">REPO ↗</a>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= EXPERIENCE ================= -->
+  <section data-screen-label="Experience" style="position:relative;background:#06070c;padding:clamp(72px,10vw,150px) clamp(22px,5vw,64px);border-bottom:1px solid rgba(0,240,255,.09);">
+    <div style="max-width:1120px;margin:0 auto;">
+      <div data-reveal style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.28em;color:#00f0ff;margin-bottom:16px;opacity:0;transform:translateY(30px);transition:opacity .7s cubic-bezier(.16,.84,.44,1), transform .7s cubic-bezier(.16,.84,.44,1);">// 003 — FIELD LOG</div>
+      <h2 data-reveal style="margin:0 0 14px;font-family:'JetBrains Mono',monospace;font-weight:800;font-size:clamp(1.9rem,5.2vw,3.4rem);letter-spacing:-.01em;color:#eafcff;opacity:0;transform:translateY(34px);transition:opacity .7s cubic-bezier(.16,.84,.44,1), transform .7s cubic-bezier(.16,.84,.44,1);">EXPERIENCE <span style="color:#ff2e97;">// 실무 · SI</span></h2>
+      <p data-reveal style="font-family:'IBM Plex Sans KR',sans-serif;font-size:clamp(1rem,1.5vw,1.1rem);line-height:1.7;color:#aeb9c9;max-width:58ch;margin:0 0 clamp(36px,5vw,52px);opacity:0;transform:translateY(30px);transition:opacity .7s cubic-bezier(.16,.84,.44,1), transform .7s cubic-bezier(.16,.84,.44,1);">대기업 SI 현장에서 관리자 시스템 개발·유지보수와 프론트엔드 구축을 맡았습니다. 회사명(K사·S사)은 보안상 익명 처리했습니다.</p>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:clamp(18px,2.4vw,26px);">
+
+        <article data-reveal style="position:relative;padding:clamp(22px,3vw,30px);background:linear-gradient(180deg, rgba(12,17,27,.5), rgba(6,7,12,.5));border:1px solid rgba(120,150,180,.14);border-left:2px solid rgba(0,240,255,.45);border-radius:5px;opacity:0;transform:translateY(40px);transition:opacity .7s cubic-bezier(.16,.84,.44,1), transform .7s cubic-bezier(.16,.84,.44,1), border-color .25s;" style-hover="border-left-color:#00f0ff;border-color:rgba(0,240,255,.3);">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px;">
+            <h3 style="margin:0;font-family:'JetBrains Mono',monospace;font-weight:800;font-size:clamp(1.2rem,2.2vw,1.5rem);color:#eafcff;">K사 <span style="font-family:'IBM Plex Sans KR',sans-serif;font-weight:500;font-size:.62em;color:rgba(174,185,201,.75);">건축자재 대기업</span></h3>
+            <span style="display:inline-flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.06em;color:#00f0ff;white-space:nowrap;"><span style="width:5px;height:5px;border-radius:50%;background:#00f0ff;box-shadow:0 0 6px #00f0ff;animation:blink 1.6s step-end infinite;"></span>2026.03 – 현재</span>
+          </div>
+          <div style="font-family:'IBM Plex Sans KR',sans-serif;font-size:.95rem;color:#d7e2ee;margin-bottom:8px;">관리자 시스템 기능 개발 · 유지보수</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.03em;color:rgba(0,240,255,.6);margin-bottom:16px;">Java 17 · Spring MVC · JSP · MyBatis · Oracle · Tomcat 9</div>
+          <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:18px;">
+            <div style="display:flex;gap:9px;font-family:'IBM Plex Sans KR',sans-serif;font-size:.9rem;line-height:1.55;color:#b7c2d1;"><span style="color:#00f0ff;flex:none;">▸</span>관리자 화면 파일 암호화(AES) 업로드 기능 신규 개발 — 기획팀 자료 배포를 백엔드팀 의존 없이 독립 운영하도록 개선</div>
+            <div style="display:flex;gap:9px;font-family:'IBM Plex Sans KR',sans-serif;font-size:.9rem;line-height:1.55;color:#b7c2d1;"><span style="color:#00f0ff;flex:none;">▸</span>파일명 중복을 AJAX 비동기로 실시간 검사 (XSSFilter 특수문자 이슈 해결)</div>
+          </div>
+          <div style="border:1px solid rgba(0,240,255,.16);border-radius:5px;background:rgba(0,240,255,.03);padding:14px 16px;">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;color:rgba(0,240,255,.75);margin-bottom:11px;">TROUBLESHOOTING — Tomcat HTTP 400</div>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <div style="font-family:'IBM Plex Sans KR',sans-serif;font-size:.83rem;line-height:1.5;color:#aeb9c9;"><span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.1em;padding:2px 6px;border-radius:2px;border:1px solid rgba(255,46,151,.4);color:#ff9ecb;margin-right:8px;">문제</span>운영 중 특정 요청에서 HTTP 400 반복 발생</div>
+              <div style="font-family:'IBM Plex Sans KR',sans-serif;font-size:.83rem;line-height:1.5;color:#aeb9c9;"><span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.1em;padding:2px 6px;border-radius:2px;border:1px solid rgba(174,185,201,.35);color:#aeb9c9;margin-right:8px;">원인</span>IPv6 loopback(::1) 요청의 HTTPS 핸드셰이크가 평문 HTTP 커넥터로 유입돼 파싱 실패</div>
+              <div style="font-family:'IBM Plex Sans KR',sans-serif;font-size:.83rem;line-height:1.5;color:#d7e2ee;"><span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.1em;padding:2px 6px;border-radius:2px;border:1px solid rgba(0,240,255,.4);color:#7ef9ff;margin-right:8px;">해결</span>프로토콜·포트 매핑을 정리해 근본 원인 해결 (앱 버그가 아닌 인프라 계층 문제로 구분)</div>
+            </div>
+          </div>
+        </article>
+
+        <article data-reveal style="position:relative;padding:clamp(22px,3vw,30px);background:linear-gradient(180deg, rgba(12,17,27,.5), rgba(6,7,12,.5));border:1px solid rgba(120,150,180,.14);border-left:2px solid rgba(0,240,255,.45);border-radius:5px;opacity:0;transform:translateY(40px);transition:opacity .7s cubic-bezier(.16,.84,.44,1), transform .7s cubic-bezier(.16,.84,.44,1), border-color .25s;" style-hover="border-left-color:#00f0ff;border-color:rgba(0,240,255,.3);">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px;">
+            <h3 style="margin:0;font-family:'JetBrains Mono',monospace;font-weight:800;font-size:clamp(1.2rem,2.2vw,1.5rem);color:#eafcff;">S사 <span style="font-family:'IBM Plex Sans KR',sans-serif;font-weight:500;font-size:.62em;color:rgba(174,185,201,.75);">대기업</span></h3>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.06em;color:rgba(174,185,201,.6);white-space:nowrap;">2026.04 – 05</span>
+          </div>
+          <div style="font-family:'IBM Plex Sans KR',sans-serif;font-size:.95rem;color:#d7e2ee;margin-bottom:8px;">KIE 데이터 라벨링 툴 프론트엔드</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.03em;color:rgba(0,240,255,.6);margin-bottom:16px;">React · TypeScript · Zustand</div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div style="display:flex;gap:9px;font-family:'IBM Plex Sans KR',sans-serif;font-size:.9rem;line-height:1.55;color:#b7c2d1;"><span style="color:#00f0ff;flex:none;">▸</span>AI 모델(KIE) 학습용 데이터 라벨링 툴 프론트엔드 구축</div>
+            <div style="display:flex;gap:9px;font-family:'IBM Plex Sans KR',sans-serif;font-size:.9rem;line-height:1.55;color:#b7c2d1;"><span style="color:#00f0ff;flex:none;">▸</span>모델 학습 상태를 실시간 폴링으로 표시하는 UI 및 진행률·epoch·step 메트릭 시각화</div>
+            <div style="display:flex;gap:9px;font-family:'IBM Plex Sans KR',sans-serif;font-size:.9rem;line-height:1.55;color:#b7c2d1;"><span style="color:#00f0ff;flex:none;">▸</span>HTTP/HTTPS 포트 혼용 CORS 오류를 proxy 설정으로 해결</div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= OTHER / ARCHIVE ================= -->
+  <section data-screen-label="Other" style="position:relative;background:#06070c;padding:clamp(72px,10vw,150px) clamp(22px,5vw,64px);border-bottom:1px solid rgba(0,240,255,.09);">
+    <div style="max-width:1120px;margin:0 auto;">
+      <div data-reveal style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.28em;color:#00f0ff;margin-bottom:16px;opacity:0;transform:translateY(30px);transition:opacity .7s cubic-bezier(.16,.84,.44,1), transform .7s cubic-bezier(.16,.84,.44,1);">// 004 — ARCHIVE</div>
+      <h2 data-reveal style="margin:0 0 clamp(28px,4vw,40px);font-family:'JetBrains Mono',monospace;font-weight:800;font-size:clamp(1.9rem,5.2vw,3.4rem);letter-spacing:-.01em;color:#eafcff;opacity:0;transform:translateY(34px);transition:opacity .7s cubic-bezier(.16,.84,.44,1), transform .7s cubic-bezier(.16,.84,.44,1);">OTHER <span style="color:#ff2e97;">// 기타 · 수상</span></h2>
+
+      <div style="border-top:1px solid rgba(0,240,255,.1);">
+        <a href="https://github.com/SoomTeum" target="_blank" rel="noopener" data-reveal style="display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;padding:22px 6px;border-bottom:1px solid rgba(0,240,255,.1);text-decoration:none;opacity:0;transform:translateY(24px);transition:opacity .6s cubic-bezier(.16,.84,.44,1), transform .6s cubic-bezier(.16,.84,.44,1), background .2s;" style-hover="background:rgba(168,85,247,.04);">
+          <div style="min-width:220px;flex:1;">
+            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px;"><span style="font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.05rem;color:#eafcff;">숨 여행, 틈</span><span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.14em;padding:3px 8px;border-radius:3px;border:1px solid rgba(168,85,247,.5);color:#c9a6ff;background:rgba(168,85,247,.12);">★ AWARD · 수상</span></div>
+            <div style="font-family:'IBM Plex Sans KR',sans-serif;font-size:.9rem;color:#aeb9c9;line-height:1.5;">관광데이터 기반 여행 서비스 · 2025 한국관광공사 관광데이터 활용 공모전 수상작</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap;"><span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:rgba(174,185,201,.65);">Frontend · 팀</span><span style="font-family:'JetBrains Mono',monospace;font-size:11.5px;letter-spacing:.08em;color:#00f0ff;">REPO ↗</span></div>
+        </a>
+
+        <a href="https://github.com/kdt-codearchitect" target="_blank" rel="noopener" data-reveal style="display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;padding:22px 6px;border-bottom:1px solid rgba(0,240,255,.1);text-decoration:none;opacity:0;transform:translateY(24px);transition:opacity .6s cubic-bezier(.16,.84,.44,1), transform .6s cubic-bezier(.16,.84,.44,1), background .2s;" style-hover="background:rgba(0,240,255,.03);">
+          <div style="min-width:220px;flex:1;">
+            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px;"><span style="font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.05rem;color:#eafcff;">POP:CON</span></div>
+            <div style="font-family:'IBM Plex Sans KR',sans-serif;font-size:.9rem;color:#aeb9c9;line-height:1.5;">JWT 인증·PortOne 결제·카카오 지도 검색을 갖춘 온라인 편의점 쇼핑몰</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap;"><span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:rgba(174,185,201,.65);">Backend · 6인/4주</span><span style="font-family:'JetBrains Mono',monospace;font-size:11.5px;letter-spacing:.08em;color:#00f0ff;">REPO ↗</span></div>
+        </a>
+
+        <a href="https://github.com/codebuilderrex" target="_blank" rel="noopener" data-reveal style="display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;padding:22px 6px;border-bottom:1px solid rgba(0,240,255,.1);text-decoration:none;opacity:0;transform:translateY(24px);transition:opacity .6s cubic-bezier(.16,.84,.44,1), transform .6s cubic-bezier(.16,.84,.44,1), background .2s;" style-hover="background:rgba(0,240,255,.03);">
+          <div style="min-width:220px;flex:1;">
+            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px;"><span style="font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.05rem;color:#eafcff;">JARVIS</span></div>
+            <div style="font-family:'IBM Plex Sans KR',sans-serif;font-size:.9rem;color:#aeb9c9;line-height:1.5;">제스처 인식 기반 AI 비서 — 손동작으로 제어하는 인터페이스 실험</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap;"><span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:rgba(174,185,201,.65);">Full-stack · Python · FastAPI</span><span style="font-family:'JetBrains Mono',monospace;font-size:11.5px;letter-spacing:.08em;color:#00f0ff;">REPO ↗</span></div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CONTACT ================= -->
+  <section data-screen-label="Contact" style="position:relative;background:#06070c;padding:clamp(80px,11vw,160px) clamp(22px,5vw,64px) clamp(40px,6vw,64px);">
+    <div style="max-width:900px;margin:0 auto;">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.28em;color:#00f0ff;margin-bottom:20px;">// 005 — CONTACT</div>
+      <h2 style="margin:0 0 20px;font-family:'IBM Plex Sans KR',sans-serif;font-weight:700;font-size:clamp(2rem,5.5vw,3.6rem);line-height:1.12;letter-spacing:-.01em;color:#eafcff;">함께 <span style="color:#00f0ff;text-shadow:0 0 26px rgba(0,240,255,.4);">단단한 것</span>을 만들어요.</h2>
+      <p style="font-family:'IBM Plex Sans KR',sans-serif;font-size:clamp(1rem,1.6vw,1.15rem);line-height:1.7;color:#aeb9c9;max-width:44ch;margin:0 0 clamp(30px,4vw,40px);">새로운 문제, 무거운 백엔드, 재밌는 실험 — 언제든 환영입니다.</p>
+      <div style="display:flex;gap:14px;flex-wrap:wrap;">
+        <a href="https://github.com/rexyoon" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:10px;font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:.1em;color:#00f0ff;text-decoration:none;padding:15px 26px;border:1px solid rgba(0,240,255,.5);border-radius:4px;background:rgba(0,240,255,.06);transition:background .22s, box-shadow .22s, color .22s;" style-hover="background:#00f0ff;color:#06070c;box-shadow:0 0 30px rgba(0,240,255,.5);">GITHUB ↗ github.com/rexyoon</a>
+        <a href="mailto:happyjj407@naver.com" style="display:inline-flex;align-items:center;gap:10px;font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:.1em;color:#ff8fc6;text-decoration:none;padding:15px 26px;border:1px solid rgba(255,46,151,.5);border-radius:4px;background:rgba(255,46,151,.06);transition:background .22s, box-shadow .22s, color .22s;" style-hover="background:#ff2e97;color:#06070c;box-shadow:0 0 30px rgba(255,46,151,.5);">EMAIL ↗ happyjj407@naver.com</a>
+      </div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;color:rgba(174,185,201,.55);margin-top:26px;">REPOS: heron-Arso · hancare-orgnazation · muyangshop · codebuilderrex · SoomTeum · kdt-codearchitect</div>
+    </div>
+    <div style="max-width:1120px;margin:clamp(56px,8vw,90px) auto 0;padding-top:24px;border-top:1px solid rgba(0,240,255,.12);display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;color:rgba(174,185,201,.55);">
+      <span>© 2026 정재윤 / rexyoon</span>
+      <span>SYS://rexyoon · STATUS: <span style="color:#00f0ff;">ONLINE</span></span>
+    </div>
+  </section>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;motion&quot;: {&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;full&quot;,&quot;lite&quot;,&quot;static&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Motion&quot;},
+  &quot;heroScene&quot;: {&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;core&quot;,&quot;sun&quot;,&quot;wave&quot;,&quot;grid&quot;],&quot;default&quot;:&quot;core&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Scene&quot;},
+  &quot;glitchIntensity&quot;: {&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:0.5,&quot;min&quot;:0,&quot;max&quot;:1,&quot;step&quot;:0.05,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Motion&quot;},
+  &quot;gridSpeed&quot;: {&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:1,&quot;min&quot;:0,&quot;max&quot;:3,&quot;step&quot;:0.1,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Motion&quot;},
+  &quot;showHud&quot;: {&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Scene&quot;}
+}">
+class Component extends DCLogic {
+  rootRef = (el) => { if (el) this.root = el; };
+
+  componentDidMount() {
+    const root = this.root;
+    if (!root) return;
+    const p = this.props || {};
+    this.params = {
+      motion: p.motion || 'auto',
+      glitch: (p.glitchIntensity == null ? 0.5 : p.glitchIntensity),
+      gridSpeed: (p.gridSpeed == null ? 1 : p.gridSpeed),
+      heroScene: (p.heroScene || 'core'),
+      showHud: (p.showHud == null ? true : p.showHud)
+    };
+    const reduceMQ = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this.mobile = window.innerWidth < 760 || window.matchMedia('(pointer:coarse)').matches;
+    let mode = this.params.motion;
+    if (mode === 'auto') mode = reduceMQ ? 'static' : (this.mobile ? 'lite' : 'full');
+    if (reduceMQ) mode = 'static';
+    this.mode = mode;
+    this.reduced = (mode === 'static');
+
+    if (!this.params.showHud) root.querySelectorAll('[data-hud]').forEach(n => n.style.display = 'none');
+
+    this._bootTimers = [];
+    this.runBoot();
+    this.loadThree();
+    this.setupGauges();
+    this.setupReveals();
+    this.setupParallax();
+    this._onResize = () => this.onResize();
+    window.addEventListener('resize', this._onResize);
+    this._safety = setTimeout(() => this.reveal(), 4500);
+  }
+
+  componentWillUnmount() { this.teardown(); }
+
+  componentDidUpdate() {
+    const p = this.props || {};
+    if (!this.params) return;
+    this.params.glitch = (p.glitchIntensity == null ? 0.5 : p.glitchIntensity);
+    this.params.gridSpeed = (p.gridSpeed == null ? 1 : p.gridSpeed);
+    const hud = (p.showHud == null ? true : p.showHud);
+    this.root.querySelectorAll('[data-hud]').forEach(n => n.style.display = hud ? '' : 'none');
+    const hs = p.heroScene || 'core';
+    if (hs !== this.sceneKind && this.renderer) { this.params.heroScene = hs; this.rebuildStage(); }
+    const reduceMQ = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let mode = p.motion || 'auto';
+    if (mode === 'auto') mode = reduceMQ ? 'static' : (this.mobile ? 'lite' : 'full');
+    if (reduceMQ) mode = 'static';
+    if (mode !== this.mode) {
+      this.mode = mode;
+      this.reduced = (mode === 'static');
+      if (this.renderer) {
+        if (mode === 'static') { if (this._raf) cancelAnimationFrame(this._raf); this._raf = null; this.renderOnce(); }
+        else { if (!this._raf) this.animate(); }
+      }
+    }
+  }
+
+  teardown() {
+    this._dead = true;
+    if (this._raf) cancelAnimationFrame(this._raf);
+    if (this._onResize) window.removeEventListener('resize', this._onResize);
+    if (this._onMove) window.removeEventListener('pointermove', this._onMove);
+    if (this._safety) clearTimeout(this._safety);
+    if (this._bootTimers) this._bootTimers.forEach(clearTimeout);
+    if (this.renderer) { try { this.renderer.dispose(); const c = this.renderer.domElement; if (c && c.parentNode) c.parentNode.removeChild(c); } catch (e) {} }
+  }
+
+  runBoot() {
+    const box = this.root.querySelector('[data-boot-lines]');
+    const bar = this.root.querySelector('[data-boot-bar]');
+    const lines = [
+      'SYS://rexyoon — cold boot',
+      '> mount /dev/portfolio ........ [OK]',
+      '> load neon_grid.glsl ......... [OK]',
+      '> spin up render_core ........ [OK]',
+      '> auth: JWT handshake ......... [OK]',
+      '> STATUS: ONLINE'
+    ];
+    if (this.reduced) {
+      if (box) box.innerHTML = lines.map(l => '<div>' + l + '</div>').join('');
+      if (bar) bar.style.width = '100%';
+      this._bootTimers.push(setTimeout(() => { this.bootDone = true; this.tryReveal(); }, 450));
+      return;
+    }
+    let i = 0;
+    const step = () => {
+      if (this._dead) return;
+      if (i < lines.length) {
+        const d = document.createElement('div');
+        d.textContent = lines[i];
+        d.style.opacity = '0';
+        d.style.transition = 'opacity .2s';
+        if (box) { box.appendChild(d); requestAnimationFrame(() => { d.style.opacity = '1'; }); }
+        if (bar) bar.style.width = Math.round((i + 1) / lines.length * 100) + '%';
+        i++;
+        this._bootTimers.push(setTimeout(step, 185));
+      } else {
+        this._bootTimers.push(setTimeout(() => { this.bootDone = true; this.tryReveal(); }, 260));
+      }
+    };
+    step();
+  }
+
+  loadThree() {
+    const start = performance.now();
+    const tick = () => {
+      if (this._dead) return;
+      if (window.THREE) {
+        try { this.initThree(); } catch (e) { console.warn('three init failed', e); this.threeFailed = true; this.showFallback(); }
+        this.threeReady = true; this.tryReveal(); return;
+      }
+      if (performance.now() - start > 3500) { this.threeFailed = true; this.showFallback(); this.tryReveal(); return; }
+      setTimeout(tick, 60);
+    };
+    tick();
+  }
+
+  showFallback() { const f = this.root.querySelector('[data-fallback]'); if (f) f.style.opacity = '1'; }
+
+  tryReveal() { if (this.bootDone && (this.threeReady || this.threeFailed)) this.reveal(); }
+
+  reveal() {
+    if (this._revealed || this._dead) return;
+    this._revealed = true;
+    if (this._safety) clearTimeout(this._safety);
+    const loader = this.root.querySelector('[data-loader]');
+    if (loader) { loader.style.opacity = '0'; loader.style.pointerEvents = 'none'; setTimeout(() => { if (loader) loader.style.display = 'none'; }, 600); }
+    const hero = this.root.querySelector('[data-hero-content]');
+    if (hero) { hero.style.opacity = '1'; hero.style.transform = 'none'; }
+    if (!this.reduced) {
+      this.root.querySelectorAll('[data-ghost]').forEach((g, idx) => {
+        const anim = idx === 0 ? 'gCyan 5.5s linear infinite' : 'gMag 5.5s linear infinite';
+        g.style.animation = 'none'; void g.offsetWidth; g.style.animation = anim;
+      });
+    }
+  }
+
+  buildFigure(color, opacity) {
+    const THREE = window.THREE;
+    const grp = new THREE.Group();
+    const mat = new THREE.MeshBasicMaterial({ color: color, wireframe: true, transparent: true, opacity: opacity });
+    grp.userData.mat = mat;
+    const add = (geo, x, y, z, rx, ry, rz) => { const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); m.rotation.set(rx || 0, ry || 0, rz || 0); grp.add(m); };
+    add(new THREE.IcosahedronGeometry(0.42, 1), 0, 1.78, 0);
+    add(new THREE.CylinderGeometry(0.16, 0.18, 0.28, 6), 0, 1.45, 0);
+    add(new THREE.CylinderGeometry(0.92, 0.5, 1.55, 10), 0, 0.62, 0);
+    add(new THREE.SphereGeometry(0.3, 8, 6), -0.86, 1.3, 0);
+    add(new THREE.SphereGeometry(0.3, 8, 6), 0.86, 1.3, 0);
+    add(new THREE.CylinderGeometry(0.2, 0.17, 0.95, 7), -1.03, 0.78, 0.02, 0, 0, 0.28);
+    add(new THREE.SphereGeometry(0.16, 6, 5), -1.17, 0.28, 0.02);
+    add(new THREE.CylinderGeometry(0.16, 0.12, 0.9, 7), -1.22, -0.2, 0.05, 0, 0, 0.16);
+    add(new THREE.SphereGeometry(0.14, 6, 5), -1.3, -0.66, 0.06);
+    add(new THREE.CylinderGeometry(0.2, 0.17, 0.95, 7), 1.03, 0.78, 0.02, 0, 0, -0.28);
+    add(new THREE.SphereGeometry(0.16, 6, 5), 1.17, 0.28, 0.02);
+    add(new THREE.CylinderGeometry(0.16, 0.12, 0.9, 7), 1.22, -0.2, 0.05, 0, 0, -0.16);
+    add(new THREE.SphereGeometry(0.14, 6, 5), 1.3, -0.66, 0.06);
+    add(new THREE.CylinderGeometry(0.5, 0.58, 0.5, 8), 0, -0.32, 0);
+    add(new THREE.CylinderGeometry(0.28, 0.22, 1.05, 8), -0.26, -1.05, 0);
+    add(new THREE.SphereGeometry(0.2, 7, 6), -0.26, -1.62, 0);
+    add(new THREE.CylinderGeometry(0.2, 0.14, 1.0, 7), -0.26, -2.15, 0);
+    add(new THREE.BoxGeometry(0.26, 0.14, 0.5), -0.26, -2.7, 0.1);
+    add(new THREE.CylinderGeometry(0.28, 0.22, 1.05, 8), 0.26, -1.05, 0);
+    add(new THREE.SphereGeometry(0.2, 7, 6), 0.26, -1.62, 0);
+    add(new THREE.CylinderGeometry(0.2, 0.14, 1.0, 7), 0.26, -2.15, 0);
+    add(new THREE.BoxGeometry(0.26, 0.14, 0.5), 0.26, -2.7, 0.1);
+    grp.scale.set(1.05, 1.05, 1.05);
+    return grp;
+  }
+
+  buildStage() {
+    const THREE = this.THREE;
+    this.stage = new THREE.Group();
+    this.scene.add(this.stage);
+    const k = this.params.heroScene || 'core';
+    this.sceneKind = k;
+    this._baseX = 0;
+    if (k === 'figure') { this.buildSceneFigure(); this.camZ = 12; this.lookAt = new THREE.Vector3(0, 0.25, -1); }
+    else if (k === 'sun') { this.buildSceneSun(); this.camZ = 12; this.lookAt = new THREE.Vector3(0, 1.5, -8); }
+    else if (k === 'wave') { this.buildSceneWave(); this.camZ = 11; this.lookAt = new THREE.Vector3(0, -0.3, -3); }
+    else if (k === 'grid') { this.camZ = 12; this.lookAt = new THREE.Vector3(0, 0.2, -4); }
+    else { this.buildSceneCore(); this.camZ = 9.5; this.lookAt = new THREE.Vector3(0, 0.9, -0.4); }
+  }
+
+  buildSceneCore() {
+    const THREE = this.THREE;
+    const g = new THREE.Group();
+    const ico = new THREE.Mesh(new THREE.IcosahedronGeometry(1.7, 1), new THREE.MeshBasicMaterial({ color: 0x00f0ff, wireframe: true, transparent: true, opacity: 0.85 }));
+    g.add(ico);
+    const coreObj = new THREE.Mesh(new THREE.IcosahedronGeometry(0.58, 1), new THREE.MeshBasicMaterial({ color: 0x9df6ff, transparent: true, opacity: 0.85, blending: THREE.AdditiveBlending }));
+    g.add(coreObj);
+    const ring = new THREE.Mesh(new THREE.TorusGeometry(2.4, 0.02, 6, 64), new THREE.MeshBasicMaterial({ color: 0xff2e97, wireframe: true, transparent: true, opacity: 0.5 }));
+    ring.rotation.x = Math.PI * 0.5;
+    g.add(ring);
+    const ring2 = new THREE.Mesh(new THREE.TorusGeometry(2.05, 0.015, 6, 64), new THREE.MeshBasicMaterial({ color: 0x00f0ff, wireframe: true, transparent: true, opacity: 0.32 }));
+    ring2.rotation.x = Math.PI * 0.33; ring2.rotation.y = 0.4;
+    g.add(ring2);
+    const ghost = new THREE.Mesh(new THREE.IcosahedronGeometry(1.7, 1), new THREE.MeshBasicMaterial({ color: 0xff2e97, wireframe: true, transparent: true, opacity: 0 }));
+    ghost.visible = false;
+    g.add(ghost);
+    g.position.set(0, 0.9, 0);
+    this.stage.add(g);
+    this.core = { g: g, ico: ico, coreObj: coreObj, ring: ring, ring2: ring2, ghost: ghost };
+    this.gTarget = g; this.gGhost = ghost; this.gGhostMat = ghost.material;
+  }
+
+  buildSceneSun() {
+    const THREE = this.THREE;
+    const seg = 64;
+    const geo = new THREE.CircleGeometry(5.2, seg);
+    const posAttr = geo.attributes.position;
+    const colorArr = new Float32Array(posAttr.count * 3);
+    const top = new THREE.Color(0x00f0ff), bot = new THREE.Color(0xff2e97);
+    for (let i = 0; i < posAttr.count; i++) {
+      const yy = posAttr.getY(i);
+      const tt = Math.max(0, Math.min(1, (yy / 5.2 + 1) / 2));
+      const c = bot.clone().lerp(top, tt);
+      colorArr[i * 3] = c.r; colorArr[i * 3 + 1] = c.g; colorArr[i * 3 + 2] = c.b;
+    }
+    geo.setAttribute('color', new THREE.BufferAttribute(colorArr, 3));
+    const sun = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.95, fog: false }));
+    sun.position.set(0, 2.4, -18);
+    this.stage.add(sun);
+    const halo = new THREE.Mesh(new THREE.CircleGeometry(6.6, seg), new THREE.MeshBasicMaterial({ color: 0xff2e97, transparent: true, opacity: 0.12, blending: THREE.AdditiveBlending, fog: false }));
+    halo.position.set(0, 2.4, -18.2);
+    this.stage.add(halo);
+    const bars = new THREE.Group();
+    const barMat = new THREE.MeshBasicMaterial({ color: 0x06070c, fog: false });
+    for (let i = 0; i < 7; i++) {
+      const hh = 0.16 + i * 0.06;
+      const bar = new THREE.Mesh(new THREE.PlaneGeometry(11, hh), barMat);
+      bar.position.set(0, -0.35 - i * 0.66, 0);
+      bars.add(bar);
+    }
+    bars.position.set(0, 2.4, -17.8);
+    this.stage.add(bars);
+    this.sun = sun; this.sunBars = bars; this.sunHalo = halo;
+    this.gTarget = sun; this.gGhost = null; this.gGhostMat = null;
+  }
+
+  buildSceneWave() {
+    const THREE = this.THREE;
+    const s = this.mobile ? 26 : 46;
+    const geo = new THREE.PlaneGeometry(28, 26, s, s);
+    const mesh = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ color: 0x00f0ff, wireframe: true, transparent: true, opacity: 0.5 }));
+    mesh.rotation.x = -Math.PI / 2.05;
+    mesh.position.set(0, -1.5, -3);
+    this.stage.add(mesh);
+    this.wave = { mesh: mesh, geo: geo, base: geo.attributes.position.array.slice(0) };
+    this.gTarget = mesh; this.gGhost = null; this.gGhostMat = null;
+  }
+
+  buildSceneFigure() {
+    const fig = this.buildFigure(0x00f0ff, 0.9);
+    const ghost = this.buildFigure(0xff2e97, 0.0);
+    ghost.visible = false;
+    fig.position.y = 0.4; ghost.position.y = 0.4;
+    this.stage.add(fig); this.stage.add(ghost);
+    this.fig = fig; this.ghost = ghost;
+    this.gTarget = fig; this.gGhost = ghost; this.gGhostMat = ghost.userData.mat;
+  }
+
+  updateStage(t) {
+    const k = this.sceneKind;
+    if (k === 'core' && this.core) {
+      const c = this.core;
+      c.g.rotation.y = t * 0.25 + this._mx * 0.5;
+      c.g.rotation.x = this._my * 0.25;
+      c.ico.rotation.x = t * 0.16; c.ico.rotation.y = t * 0.2;
+      c.coreObj.scale.setScalar(1 + Math.sin(t * 2.2) * 0.09);
+      c.ring.rotation.z = t * 0.5; c.ring2.rotation.z = -t * 0.34;
+      if (c.ghost) c.ghost.rotation.copy(c.ico.rotation);
+      this.updateGlitch(t);
+    } else if (k === 'figure' && this.fig) {
+      this.fig.rotation.y = Math.sin(t * 0.5) * 0.12 + this._mx * 0.5;
+      this.fig.rotation.x = this._my * 0.12;
+      this.fig.scale.y = 1.05 * (1 + Math.sin(t * 1.4) * 0.012);
+      this.fig.position.y = 0.4 + Math.sin(t * 0.6) * 0.05;
+      if (this.ghost) { this.ghost.rotation.copy(this.fig.rotation); this.ghost.position.y = this.fig.position.y; this.ghost.scale.copy(this.fig.scale); }
+      this.updateGlitch(t);
+    } else if (k === 'sun' && this.sun) {
+      const y = 2.4 + Math.sin(t * 0.5) * 0.06;
+      this.sun.position.y = y; if (this.sunBars) this.sunBars.position.y = y; if (this.sunHalo) this.sunHalo.position.y = y;
+      this.updateGlitch(t);
+    } else if (k === 'wave' && this.wave) {
+      const p = this.wave.geo.attributes.position, b = this.wave.base;
+      for (let i = 0; i < p.count; i++) { const x = b[i * 3], yv = b[i * 3 + 1]; p.setZ(i, Math.sin(x * 0.5 + t * 1.2) * 0.5 + Math.cos(yv * 0.5 + t * 0.9) * 0.5); }
+      p.needsUpdate = true;
+      this.wave.mesh.rotation.z = this._mx * 0.12;
+      this.updateGlitch(t);
+    }
+  }
+
+  clearStage() {
+    if (this.stage) {
+      this.scene.remove(this.stage);
+      this.stage.traverse(o => { if (o.geometry) o.geometry.dispose(); if (o.material) { if (Array.isArray(o.material)) o.material.forEach(m => m.dispose()); else o.material.dispose(); } });
+    }
+    this.stage = null; this.core = null; this.sun = null; this.sunBars = null; this.sunHalo = null; this.wave = null; this.fig = null; this.ghost = null;
+    this.gTarget = null; this.gGhost = null; this.gGhostMat = null;
+  }
+
+  rebuildStage() {
+    this.clearStage();
+    this.buildStage();
+    if (this.mode === 'static') this.renderOnce();
+  }
+
+  initThree() {
+    const THREE = window.THREE;
+    const host = this.root.querySelector('[data-three]');
+    const w = host.clientWidth || window.innerWidth;
+    const h = host.clientHeight || window.innerHeight;
+    const scene = new THREE.Scene();
+    scene.fog = new THREE.Fog(0x06070c, 18, 82);
+    const cam = new THREE.PerspectiveCamera(58, w / h, 0.1, 160);
+    cam.position.set(0, 1.6, 12);
+    const renderer = new THREE.WebGLRenderer({ antialias: !this.mobile, alpha: true, powerPreference: 'high-performance' });
+    renderer.setClearColor(0x000000, 0);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, this.mobile ? 1.5 : 2));
+    renderer.setSize(w, h);
+    renderer.domElement.style.display = 'block';
+    renderer.domElement.style.width = '100%';
+    renderer.domElement.style.height = '100%';
+    host.appendChild(renderer.domElement);
+    this.THREE = THREE; this.scene = scene; this.camera = cam; this.renderer = renderer; this.host = host;
+
+    const div = this.mobile ? 60 : 120;
+    const grid = new THREE.GridHelper(240, div, 0xff2e97, 0x0a8ea0);
+    grid.material.transparent = true;
+    grid.material.opacity = 0.5;
+    grid.position.y = -2;
+    scene.add(grid);
+    this.grid = grid;
+    this.cell = 240 / div;
+
+    this._defLook = new THREE.Vector3(0, 0.4, -1);
+    this.buildStage();
+
+    const pcount = this.reduced ? 0 : (this.mobile ? 40 : 130);
+    if (pcount > 0) {
+      const g = new THREE.BufferGeometry();
+      const arr = new Float32Array(pcount * 3);
+      for (let i = 0; i < pcount; i++) { arr[i * 3] = (Math.random() - 0.5) * 44; arr[i * 3 + 1] = Math.random() * 22 - 4; arr[i * 3 + 2] = (Math.random() - 0.5) * 44 - 6; }
+      g.setAttribute('position', new THREE.BufferAttribute(arr, 3));
+      const m = new THREE.PointsMaterial({ color: 0x00f0ff, size: 0.06, transparent: true, opacity: 0.7 });
+      this.pts = new THREE.Points(g, m);
+      scene.add(this.pts);
+    }
+
+    this._clock = new THREE.Clock();
+    this._gEnd = 0; this._gNext = 2;
+    if (this.mode === 'static') this.renderOnce();
+    else this.animate();
+  }
+
+  renderOnce() {
+    if (!this.renderer) return;
+    this._mx = 0.12; this._my = 0.03;
+    if (this.grid) this.grid.position.z = 0;
+    this.updateStage(0.6);
+    const asp = this.camera.aspect || 1;
+    const zb = asp < 1 ? (1 / asp - 1) * 4 : 0;
+    this.camera.position.set(0.2, 1.63, (this.camZ || 12) + zb);
+    this.camera.lookAt(this.lookAt || this._defLook);
+    this.renderer.render(this.scene, this.camera);
+  }
+
+  updateGlitch(t) {
+    const gi = this.params.glitch;
+    const tgt = this.gTarget;
+    if (!tgt) return;
+    if (gi <= 0) { if (this.gGhost) this.gGhost.visible = false; tgt.position.x = this._baseX || 0; return; }
+    if (t < this._gEnd) {
+      const j = (Math.random() - 0.5);
+      tgt.position.x = (this._baseX || 0) + j * 0.22 * gi;
+      if (this.gGhost) { this.gGhost.visible = true; this.gGhost.position.x = -j * 0.3 * gi; if (this.gGhostMat) this.gGhostMat.opacity = 0.5; }
+    } else {
+      if (this._gEnd !== 0) { tgt.position.x = this._baseX || 0; if (this.gGhost) { this.gGhost.visible = false; this.gGhost.position.x = 0; if (this.gGhostMat) this.gGhostMat.opacity = 0; } this._gEnd = 0; }
+      if (t >= this._gNext) { this._gEnd = t + 0.08 + Math.random() * 0.09; this._gNext = t + (2.6 + Math.random() * 4) / (0.4 + gi); }
+    }
+  }
+
+  animate() {
+    if (this._dead || this.mode === 'static') { this._raf = null; return; }
+    this._raf = requestAnimationFrame(() => this.animate());
+    const t = this._clock.getElapsedTime();
+    const gs = 2.2 * this.params.gridSpeed * (this.mobile ? 0.7 : 1);
+    if (this.grid) this.grid.position.z = (t * gs) % this.cell;
+    this._mx = (this._mx || 0) + (((this._tmx || 0) - (this._mx || 0)) * 0.05);
+    this._my = (this._my || 0) + (((this._tmy || 0) - (this._my || 0)) * 0.05);
+    this.camera.position.x = this._mx * 1.8;
+    this.camera.position.y = 1.6 + this._my * 0.9;
+    const asp = this.camera.aspect || 1;
+    const zb = asp < 1 ? (1 / asp - 1) * 4 : 0;
+    this.camera.position.z = (this.camZ || 12) + zb;
+    this.camera.lookAt(this.lookAt || this._defLook);
+    this.updateStage(t);
+    if (this.pts) { this.pts.position.y = (t * 0.3) % 1; this.pts.rotation.y = t * 0.02; }
+    this.renderer.render(this.scene, this.camera);
+  }
+
+  setupParallax() {
+    if (this.reduced || this.mobile) return;
+    this._onMove = (e) => { this._tmx = (e.clientX / window.innerWidth) * 2 - 1; this._tmy = (e.clientY / window.innerHeight) * 2 - 1; };
+    window.addEventListener('pointermove', this._onMove, { passive: true });
+  }
+
+  onResize() {
+    if (!this.renderer || !this.host) return;
+    const w = this.host.clientWidth, h = this.host.clientHeight;
+    if (!w || !h) return;
+    this.camera.aspect = w / h;
+    this.camera.updateProjectionMatrix();
+    this.renderer.setSize(w, h);
+    if (this.mode === 'static') this.renderOnce();
+  }
+
+  setupGauges() {
+    const graph = this.root.querySelector('[data-statgraph]');
+    if (!graph) return;
+    const bars = Array.prototype.slice.call(graph.querySelectorAll('[data-bar]'));
+    if (!bars.length) return;
+    const TR = 'transform .85s cubic-bezier(.16,.84,.44,1)';
+    const grow = () => {
+      bars.forEach(b => { b.style.transition = 'none'; b.style.transform = 'scaleY(0.02)'; });
+      void graph.getBoundingClientRect();
+      bars.forEach((b, i) => { setTimeout(() => { if (this._dead) return; b.style.transition = TR; b.style.transform = 'scaleY(1)'; }, 120 + i * 130); });
+    };
+    if (!('IntersectionObserver' in window)) return;
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(en => { if (en.isIntersecting) { grow(); io.disconnect(); } });
+    }, { threshold: 0.3 });
+    io.observe(graph);
+  }
+
+  setupReveals() {
+    const els = Array.prototype.slice.call(this.root.querySelectorAll('[data-reveal]'));
+    if (!els.length) return;
+    if (!('IntersectionObserver' in window)) { els.forEach(e => this.doReveal(e, false)); return; }
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(en => { if (en.isIntersecting) { this.doReveal(en.target, true); io.unobserve(en.target); } });
+    }, { threshold: 0.14, rootMargin: '0px 0px -7% 0px' });
+    els.forEach(e => io.observe(e));
+  }
+
+  doReveal(el, stagger) {
+    let d = 0;
+    if (stagger) {
+      const parent = el.parentElement;
+      const sibs = parent ? Array.prototype.slice.call(parent.querySelectorAll(':scope > [data-reveal]')) : [el];
+      const idx = Math.max(0, sibs.indexOf(el));
+      d = idx * 95;
+    }
+    setTimeout(() => {
+      if (this._dead) return;
+      el.style.opacity = '1';
+      el.style.transform = 'none';
+      el.style.filter = 'none';
+    }, d);
+  }
+
+  renderVals() { return { rootRef: this.rootRef }; }
+}
+</script>
+</body>
+</html>

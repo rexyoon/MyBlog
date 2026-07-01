@@ -1,0 +1,21 @@
+{
+  "name": "rexyoon-portfolio",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "사이버펑크 풀스택 포트폴리오 — 정재윤 / rexyoon",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "three": "^0.128.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "vite": "^5.4.11"
+  }
+}

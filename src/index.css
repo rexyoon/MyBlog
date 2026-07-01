@@ -1,0 +1,124 @@
+/* ================= GLOBAL / TOKENS ================= */
+:root {
+  --void: #06070c;
+  --cy: #00f0ff;
+  --mg: #ff2e97;
+  --pu: #a855f7;
+  --ink: #eafcff;
+  --dim: #aeb9c9;
+}
+
+* {
+  box-sizing: border-box;
+}
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+body {
+  background: #06070c;
+  color: #eafcff;
+  font-family: 'IBM Plex Sans KR', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+#root {
+  position: relative;
+  overflow-x: hidden;
+}
+::selection {
+  background: #00f0ff;
+  color: #06070c;
+}
+a {
+  color: inherit;
+}
+
+/* ================= KEYFRAMES ================= */
+@keyframes gCyan {
+  0%, 6%, 100% { opacity: 0; transform: translate(0, 0); }
+  0.6% { opacity: 0.6; transform: translate(-3px, -1px); }
+  1.6% { opacity: 0.4; transform: translate(3px, 1px); }
+  2.6% { opacity: 0.6; transform: translate(-2px, 1px); }
+  3.6% { opacity: 0.35; transform: translate(2px, 0); }
+  4.6% { opacity: 0; transform: translate(0, 0); }
+}
+@keyframes gMag {
+  0%, 6%, 100% { opacity: 0; transform: translate(0, 0); }
+  0.6% { opacity: 0.6; transform: translate(3px, 1px); }
+  1.6% { opacity: 0.4; transform: translate(-3px, -1px); }
+  2.6% { opacity: 0.6; transform: translate(2px, -1px); }
+  3.6% { opacity: 0.35; transform: translate(-2px, 0); }
+  4.6% { opacity: 0; transform: translate(0, 0); }
+}
+@keyframes blink {
+  50% { opacity: 0.15; }
+}
+@keyframes hudflk {
+  0%, 100% { opacity: 0.62; }
+  50% { opacity: 0.36; }
+}
+@keyframes bob {
+  0% { transform: translateY(0); opacity: 0; }
+  20% { opacity: 1; }
+  100% { transform: translateY(28px); opacity: 0; }
+}
+@keyframes cardGlitch {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(-1px, 1px); }
+  50% { transform: translate(1px, -1px); }
+  75% { transform: translate(-1px, 0); }
+  100% { transform: translate(0, 0); }
+}
+
+/* ================= HOVER STATES (from style-hover) ================= */
+.card-featured:hover {
+  border-color: rgba(0, 240, 255, 0.7);
+  box-shadow: 0 0 0 1px rgba(0, 240, 255, 0.3), 0 0 40px rgba(0, 240, 255, 0.14),
+    inset 0 0 40px rgba(0, 240, 255, 0.05);
+  animation: cardGlitch 0.35s steps(2, end) 1;
+}
+.card-dev:hover {
+  border-color: rgba(255, 46, 151, 0.6);
+  box-shadow: 0 0 0 1px rgba(255, 46, 151, 0.28), 0 0 34px rgba(255, 46, 151, 0.12),
+    inset 0 0 30px rgba(255, 46, 151, 0.05);
+  animation: cardGlitch 0.35s steps(2, end) 1;
+}
+.card-exp:hover {
+  border-left-color: #00f0ff;
+  border-color: rgba(0, 240, 255, 0.3);
+}
+.link-site:hover {
+  border-bottom-color: #00f0ff;
+  text-shadow: 0 0 12px rgba(0, 240, 255, 0.6);
+}
+.link-repo:hover {
+  color: #00f0ff;
+  border-bottom-color: #00f0ff;
+}
+.row-award:hover {
+  background: rgba(168, 85, 247, 0.04);
+}
+.row-cyan:hover {
+  background: rgba(0, 240, 255, 0.03);
+}
+.btn-github:hover {
+  background: #00f0ff;
+  color: #06070c;
+  box-shadow: 0 0 30px rgba(0, 240, 255, 0.5);
+}
+.btn-email:hover {
+  background: #ff2e97;
+  color: #06070c;
+  box-shadow: 0 0 30px rgba(255, 46, 151, 0.5);
+}
+
+/* ================= REDUCED MOTION ================= */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01s !important;
+  }
+}
